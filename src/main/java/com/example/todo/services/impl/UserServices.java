@@ -4,7 +4,7 @@ import com.example.todo.dto.GeneralResponse;
 import com.example.todo.dto.UserDto;
 import com.example.todo.entities.User;
 import com.example.todo.mapper.UserMapper;
-import com.example.todo.repositories.UserRepository;
+import com.example.todo.repositories.IUserRepository;
 import com.example.todo.services.IUserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServices implements IUserServices {
 
-    UserRepository userRepository;
+    private final IUserRepository userRepository;
     private final UserMapper userMapper;
     private final GeneralResponse response;
 
     @Autowired
-    public UserServices(UserMapper userMapper, GeneralResponse response) {
+    public UserServices(IUserRepository userRepository, UserMapper userMapper, GeneralResponse response) {
+        this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.response = response;
     }
@@ -26,12 +27,12 @@ public class UserServices implements IUserServices {
     public GeneralResponse saveUser(UserDto userDto) {
 //        GeneralResponse response = new GeneralResponse();
         try {
-            User user = userRepository.findByPhone(userDto.getPhone());
-            if(user != null) {
-                response.setCode(200);
-                response.setSuccess(false);
-                response.setMessage("User already exists.");
-            }
+            User user; // = userRepository.findByPhone(userDto.getPhone());
+//            if(user != null) {
+//                response.setCode(200);
+//                response.setSuccess(false);
+//                response.setMessage("User already exists.");
+//            }
             user = userRepository.save(userMapper.dtoToEntity(userDto));
             response.setCode(200);
             response.setSuccess(true);
